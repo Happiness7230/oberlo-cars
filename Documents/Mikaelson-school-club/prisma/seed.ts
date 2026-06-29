@@ -119,6 +119,68 @@ async function main() {
     console.log("ℹ️ Events already seeded.");
   }
 
+  // 6. Seed Volunteer Applications (5 applications)
+  const volunteerCount = await prisma.volunteerApplication.count();
+  if (volunteerCount === 0) {
+    console.log("Seeding 5 Volunteer Applications...");
+    const volunteers = [
+      {
+        name: "Adebayo Adesina",
+        email: "adebayo@example.com",
+        phone: "+2348012345678",
+        role: "Teacher",
+        org: "Igbobi College",
+        location: "Lagos, Nigeria",
+        motivation: "I want to help guide the next generation of leaders in my school.",
+        status: "PENDING" as const,
+      },
+      {
+        name: "Chioma Nwachukwu",
+        email: "chioma@example.com",
+        phone: "+2348022223333",
+        role: "Community Leader",
+        org: "Lagos Youth Alliance",
+        location: "Lagos, Nigeria",
+        motivation: "Mentoring youths is my passion. I want to assist chapters in my local area.",
+        status: "REVIEWED" as const,
+      },
+      {
+        name: "Kofi Mensah",
+        email: "kofi@example.com",
+        phone: "+233241234567",
+        role: "Other",
+        org: "Self-Employed",
+        location: "Accra, Ghana",
+        motivation: "Excited about expansion to Ghana. Happy to help run career workshops.",
+        status: "SCHEDULED" as const,
+      },
+      {
+        name: "Fatima Yusuf",
+        email: "fatima@example.com",
+        phone: "+2348034445555",
+        role: "Senior Student/Prefect",
+        org: "Queen's College",
+        location: "Lagos, Nigeria",
+        motivation: "As a student champion, I want to lead our school's community project.",
+        status: "TRAINING" as const,
+      },
+      {
+        name: "John Okafor",
+        email: "john@example.com",
+        phone: "+2348045556666",
+        role: "Teacher",
+        org: "Kings College",
+        location: "Lagos, Nigeria",
+        motivation: "I have been supporting school clubs for 5 years.",
+        status: "LAUNCHED" as const,
+      }
+    ];
+    await prisma.volunteerApplication.createMany({ data: volunteers });
+    console.log("✅ 5 Volunteer Applications seeded.");
+  } else {
+    console.log("ℹ️ Volunteer Applications already seeded.");
+  }
+
   console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
   console.log("✅ Seeding Complete!");
   console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");

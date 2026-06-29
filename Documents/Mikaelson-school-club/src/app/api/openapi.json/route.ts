@@ -199,6 +199,97 @@ export async function GET() {
             200: { description: "Success" }
           }
         }
+      },
+      "/volunteer": {
+        post: {
+          summary: "Submit Volunteer Application",
+          description: "Submits a new volunteer application. Rate limited.",
+          requestBody: {
+            required: true,
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    name: { type: "string" },
+                    email: { type: "string" },
+                    phone: { type: "string" },
+                    role: { type: "string" },
+                    org: { type: "string" },
+                    location: { type: "string" },
+                    motivation: { type: "string" }
+                  },
+                  required: ["name", "email", "role"]
+                }
+              }
+            }
+          },
+          responses: {
+            201: { description: "Created successfully." },
+            400: { description: "Validation failure or duplicate submission." }
+          }
+        }
+      },
+      "/admin/volunteers": {
+        get: {
+          summary: "List Volunteer Applications (requires Admin)",
+          description: "Returns a paginated list of volunteer applications.",
+          responses: {
+            200: { description: "Success" },
+            401: { description: "Unauthenticated" },
+            403: { description: "Forbidden" }
+          }
+        }
+      },
+      "/admin/volunteers/{id}": {
+        patch: {
+          summary: "Update Volunteer Status (requires Admin)",
+          parameters: [
+            {
+              name: "id",
+              in: "path",
+              required: true,
+              schema: { type: "string" }
+            }
+          ],
+          requestBody: {
+            required: true,
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  properties: {
+                    status: { type: "string", enum: ["REVIEWED", "SCHEDULED", "TRAINING", "LAUNCHED", "REJECTED"] }
+                  }
+                }
+              }
+            }
+          },
+          responses: {
+            200: { description: "Updated successfully." },
+            400: { description: "Validation error." },
+            401: { description: "Unauthenticated." },
+            403: { description: "Forbidden." },
+            404: { description: "Not found." }
+          }
+        },
+        delete: {
+          summary: "Soft-Delete Volunteer Application (requires Admin)",
+          parameters: [
+            {
+              name: "id",
+              in: "path",
+              required: true,
+              schema: { type: "string" }
+            }
+          ],
+          responses: {
+            200: { description: "Deleted successfully." },
+            401: { description: "Unauthenticated." },
+            403: { description: "Forbidden." },
+            404: { description: "Not found." }
+          }
+        }
       }
     }
   };

@@ -348,3 +348,95 @@ export async function sendEmailVerificationEmail(data: {
     html,
   });
 }
+
+// ── Volunteer emails ─────────────────────────────────────────────────────────
+
+const VOLUNTEER_STATUS_MESSAGES: Record<string, string> = {
+  REVIEWED: "Your volunteer application has been reviewed by our team.",
+  SCHEDULED: "We would like to schedule a call with you to discuss volunteering. Check your inbox for a calendar invite.",
+  TRAINING: "Your champion volunteer training programme has begun. Welcome aboard!",
+  LAUNCHED: "Your status is now set to Launched. Thank you for your support!",
+  REJECTED:
+    "After careful consideration, we are unable to proceed with your volunteer application at this time.",
+};
+
+export async function sendVolunteerConfirmation(data: {
+  to: string;
+  name: string;
+}) {
+  const html = buildEmailTemplate(`
+    <p>Hi ${data.name},</p>
+    <p>Thank you for applying to volunteer with the Mikaelson Initiative.</p>
+    <p>Our team will review your application and reach out within <strong>3 working days</strong> to discuss next steps.</p>
+    <p>If you have questions in the meantime, reply to this email or contact us at
+       <a href="mailto:hello@mikaelsoninitiative.org">hello@mikaelsoninitiative.org</a>.</p>
+    <p>With excitement,<br/>The Mikaelson Initiative Team</p>
+  `);
+
+  return resend.emails.send({
+    from: FROM,
+    to: data.to,
+    subject: "We received your volunteer application — Mikaelson Initiative",
+    html,
+  });
+}
+
+export async function sendVolunteerAlert(data: {
+  name: string;
+  email: string;
+  phone?: string;
+  role: string;
+  org?: string;
+  location?: string;
+  motivation?: string;
+  applicationId: string;
+}) {
+  const html = buildEmailTemplate(`
+    <h2>New Volunteer Application</h2>
+    <table>
+      <tr><td>Name</td><td>${data.name}</td></tr>
+      <tr><td>Email</td><td>${data.email}</td></tr>
+      <tr><td>Phone</td><td>${data.phone ?? "—"}</td></tr>
+      <tr><td>Role</td><td>${data.role}</td></tr>
+      <tr><td>Organisation</td><td>${data.org ?? "—"}</td></tr>
+      <tr><td>Location</td><td>${data.location ?? "—"}</td></tr>
+      <tr><td>Motivation</td><td>${data.motivation ?? "—"}</td></tr>
+      <tr><td>Application ID</td><td>${data.applicationId}</td></tr>
+    </table>
+    <p style="text-align: center;">
+      <a href="${env.NEXTAUTH_URL}/admin/volunteers/${data.applicationId}" class="btn">
+        View in admin dashboard →
+      </a>
+    </p>
+  `);
+
+  return resend.emails.send({
+    from: FROM,
+    to: "hello@mikaelsoninitiative.org",
+    subject: `New volunteer: ${data.name}`,
+    html,
+  });
+}
+
+export async function sendVolunteerStatusUpdateEmail(data: {
+  to: string;
+  name: string;
+  newStatus: string;
+}) {
+  const body = VOLUNTEER_STATUS_MESSAGES[data.newStatus];
+  if (!body) return;
+  const html = buildEmailTemplate(`
+    <p>Hi ${data.name},</p>
+    <p>${body}</p>
+    <p>If you have questions, reply to this email or contact us at
+       <a href="mailto:hello@mikaelsoninitiative.org">hello@mikaelsoninitiative.org</a>.</p>
+    <p>Warm regards,<br/>The Mikaelson Initiative Team</p>
+  `);
+
+  return resend.emails.send({
+    from: FROM,
+    to: data.to,
+    subject: "Update on your volunteer application — Mikaelson Initiative",
+    html,
+  });
+}

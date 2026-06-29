@@ -407,3 +407,21 @@ model RateLimitBreach {
   @@index([ip])
 }
 
+model VolunteerApplication {
+  id         String            @id @default(uuid())
+  name       String
+  email      String
+  phone      String?
+  role       String
+  org        String?
+  location   String?
+  motivation String?           @db.Text
+  status     ApplicationStatus @default(PENDING)
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
+  isDeleted  Boolean           @default(false)
+  deletedAt  DateTime?
+
+  @@index([isDeleted])
+}
+

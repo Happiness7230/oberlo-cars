@@ -19,7 +19,7 @@ export const metricsRepository = {
       prisma.schoolChapter.count(),
       prisma.schoolChapter.count({ where: { status: "ACTIVE" } }),
       prisma.schoolChapter.aggregate({ _sum: { studentsCount: true } }),
-      prisma.application.count(),
+      prisma.volunteerApplication.count(),
       prisma.contactMessage.count({ where: { type: "SCHOOL_ENQUIRY" } }),
       prisma.contactMessage.count({ where: { type: "PARTNERSHIP" } }),
       prisma.application.count({ where: { status: "PENDING" } }),

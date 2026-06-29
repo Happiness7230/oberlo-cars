@@ -28,6 +28,7 @@ const SOFT_DELETE_MODELS = new Set([
   "TeamMember",
   "Lesson",
   "Project",
+  "VolunteerApplication",
 ]);
 
 function buildPrismaClient() {
